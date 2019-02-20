@@ -1,0 +1,12 @@
+total 128
+drwxrwxr-x 4 wumbologist wumbologist  4096 Feb 14 21:02 .
+drwxrwxr-x 9 wumbologist wumbologist  4096 Oct 23 18:39 ..
+drwxrwxr-x 8 wumbologist wumbologist  4096 Apr 20  2018 .git
+-rw-rw-r-- 1 wumbologist wumbologist   706 Feb 19  2018 Makefile
+drwxrwxr-x 2 wumbologist wumbologist  4096 Feb 19  2018 obj
+-rw-rw-r-- 1 wumbologist wumbologist  3275 Feb 19  2018 shell.c
+-rw-rw-r-- 1 wumbologist wumbologist  5018 Feb 20  2018 test.c
+-rw-rw-r-- 1 wumbologist wumbologist     0 Feb 14 21:02 test.txt
+-rwxrwxr-x 1 wumbologist wumbologist 18048 Feb 14 21:02 wish
+-rw-rw-r-- 1 wumbologist wumbologist  5001 Feb 19  2018 wish2.c
+-rw-rw-r-- 1 wumbologist wumbologist  9194 Feb 14 21:02 wish.c

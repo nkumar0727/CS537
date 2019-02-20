@@ -1,0 +1,48 @@
+my-cat.c
+  This implementation was very similar to what the demo provided during the discussion section.
+
+  I have just added a loop to print for every file argument specified, and a case where the
+  argument count is 0 (where 0 is returned and the program ends).
+
+my-grep.c
+  There are 3 cases based on the arguments: no arguments, one argument, and multiple arguments.
+  
+  If there is one argument, it is first checked if a file of this name can be opened. If so, then
+  no lines should match, as there is no search term. If the argument cannot be opened as a file, it
+  is considered a search term, and checked for in the stdin stream.
+  
+  If there are > 1 additional argument, each file is oened up one by one and scanned for the search
+  term.
+
+  The getline() function is used for reading lines from the file so that I don't have to worry about
+  buffer management (getline() uses an internal buffer that resizes based on the line size).
+
+  The strstr() function is used for detecting the presence of a string in a larger string.
+
+my-zip.c
+  There were two ideas I had:
+    -Open each file one by one and process each character
+    -Load the contents of all files into one large contiguous chunk, and then process each character
+
+  Based on anecdotal evidence, I saw that the second option had a faster elapsed time than the first
+  option. One rationale for this was that reading in large chunks was more efficient than reading in
+  smaller chunks (assuming that reading in one character fetches a larger chunk that is cached).
+
+  I used the struct stat and the stat() function to retrieve the sizes of all the files to allocate
+  the buffer size properly.
+
+  As a result, my code is broken into two parts:
+    -Read everything into a buffer
+    -Process each character in the buffer
+
+  I end up using putc() to output the character (I read on the man pages that this could be
+  implemented internally as a macro -- I don't know if it is, but if so, it's faster than a call to
+  printf()).
+
+my-unzip.c
+  The first chunk of my code is the same as in my-zip.c; I just read the file into one huge chunk.
+  The second chunk is pretty simple; read the first 4 bytes from an offset as an unsigned int 
+  (4 bytes in size), and then read the 5th byte from the offset as a char. From there I shift the
+  offset till I reach the end of the buffer.
+
+  I also use putc() for the same reason as above (though idk if it actually makes a difference).

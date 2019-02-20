@@ -1,0 +1,75 @@
+#include "types.h" 
+#include "user.h"
+#include "pstat.h"
+
+#define STDOUT 1
+#define PROCS 3
+#define LIMIT 20
+
+
+int
+main(int argc, char* argv[]) {
+  // create three procs with 3:2:1 ticket ratio
+  // monitor their ticks per time slice
+  int parentPid = getpid();
+  if(settickets(1000) == -1) {
+    printf(STDOUT, "parent proc failed to settickets\n");
+    exit();
+  }
+  int pid;
+  uint ticks_end[PROCS];
+  int pidtbl[PROCS];
+  int ptix[PROCS] = {10, 20, 30};
+  uint ticks_start = uptime();
+  /** printf(STDOUT, "Start time: %d\n", ticks_start); */
+  for(int i = 0; i < PROCS; ++i) {
+    pid = pidtbl[i] = fork();
+    if(pidtbl[i] < 0) { // fork failed
+      printf(STDOUT, "proc[%d] has failed to fork\n", parentPid);
+      exit();
+    }
+    if(pidtbl[i] == 0) { // child proc
+      int rc = settickets(ptix[i]);
+      if(rc == -1) {
+        printf(STDOUT, "child proc[%d]; settickets failed\n", pidtbl[i]);
+        exit();
+      }
+      // spin...
+      for(int x = 0; x < 50000000; ++x) {
+        x = x; x = x; x = x;
+      }
+      break;
+    }
+    // parent proc    
+  }
+  if(pid > 0) { // parent proc
+    /** uint temp_ticks = 0;     */
+    for(int i = 0; i < PROCS; ++i) {
+      int wc;
+      if((wc = wait()) < 0) {
+        printf(STDOUT, "parent proc[%d] stopped waiting too early\n", parentPid);
+        exit();
+      }
+      /** temp_ticks = uptime();  */
+      /** printf(STDOUT, "End Time: %d\n", temp_ticks); */
+      for(int j = 0; j < PROCS; ++j) {
+        if(pidtbl[j] == wc) {
+          ticks_end[j] = uptime();
+          break;
+        }
+      }
+    }
+    if(wait() != -1) {
+      printf(STDOUT, "parent proc[%d] waited too much\n", parentPid);
+      exit();
+    }
+    /** printf(STDOUT, "Parent proc[%d] has finished gathering data...\n", parentPid); */
+    for(int i = 0; i < PROCS; ++i) {
+      /** printf(STDOUT, "Child proc[%d] with %d tix took %d slices\n", 
+        *   pidtbl[i], ptix[i] * t, ticks_end[i] - ticks_start); */
+      printf(STDOUT, "%d:%d,%d:%d,%d:%d\n", ptix[0], ticks_end[0]-ticks_start,
+        ptix[1], ticks_end[1]-ticks_start, ptix[2], ticks_end[2]-ticks_start);
+    }
+  }
+  exit();
+}
